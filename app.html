@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Finance Chatbot</title>
+  <style>
+    body { font-family: Arial; background: #f2f2f2; margin: 0; padding: 0; }
+    h2 { text-align: center; background: #2c3e50; color: white; padding: 15px; }
+    #chat-box { max-width: 600px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .message { margin: 10px 0; }
+    .user { text-align: right; color: blue; }
+    .bot { text-align: left; color: green; }
+    #userInput { width: 80%; padding: 10px; font-size: 16px; }
+    button { padding: 10px 20px; font-size: 16px; margin-left: 10px; }
+  </style>
+</head>
+<body>
+  <h2>💸 Personal Finance Chatbot (Python Powered)</h2>
+  <div id="chat-box"></div>
+  <div style="text-align:center; margin-top: 10px;">
+    <input type="text" id="userInput" placeholder="Ask about savings, taxes, or investments..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const inputField = document.getElementById("userInput");
+      const userText = inputField.value;
+      if (!userText.trim()) return;
+
+      addMessage("You: " + userText, 'user');
+      inputField.value = "";
+
+      const response = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userText })
+      });
+
+      const data = await response.json();
+      addMessage("Bot: " + data.reply, 'bot');
+    }
+
+    function addMessage(text, sender) {
+      const msgDiv = document.createElement("div");
+      msgDiv.className = "message " + sender;
+      msgDiv.textContent = text;
+      document.getElementById("chat-box").appendChild(msgDiv);
+    }
+  </script>
+</body>
+</html>
